@@ -1542,6 +1542,7 @@ const windowIsDefined = (typeof window === "object");
 						}
 					}
 				}
+				this._trigger('layout');
 			},
 			_createHighlightRange: function (start, end) {
 				if (this._isHighlightRange(start, end)) {
