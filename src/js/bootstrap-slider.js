@@ -548,12 +548,19 @@ const windowIsDefined = (typeof window === "object");
 					this.tickLabelContainer = document.createElement('div');
 					this.tickLabelContainer.className = 'slider-tick-label-container';
 
+					var hasValues = Array.isArray(this.options.ticks_values) &&
+						this.options.ticks_values.length == this.options.ticks_labels.length;
+
 					for (i = 0; i < this.options.ticks_labels.length; i++) {
 						var label = document.createElement('div');
 						var noTickPositionsSpecified = this.options.ticks_positions.length === 0;
 						var tickLabelsIndex = (this.options.reversed && noTickPositionsSpecified) ? (this.options.ticks_labels.length - (i + 1)) : i;
 						label.className = 'slider-tick-label';
 						label.innerHTML = this.options.ticks_labels[tickLabelsIndex];
+
+						if (hasValues) {
+							label.setAttribute('data-value', this.options.ticks_values[i]);
+						}
 
 						this.tickLabels.push(label);
 						this.tickLabelContainer.appendChild(label);
@@ -901,6 +908,7 @@ const windowIsDefined = (typeof window === "object");
 				ticks: [],
 				ticks_positions: [],
 				ticks_labels: [],
+				ticks_values: [],
 				ticks_snap_bounds: 0,
 				ticks_tooltip: false,
 				scale: 'linear',
