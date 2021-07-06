@@ -526,6 +526,7 @@ const windowIsDefined = (typeof window === "object");
 					for (i = 0; i < this.options.ticks.length; i++) {
 						var tick = document.createElement('div');
 						tick.className = 'slider-tick';
+						tick.setAttribute('data-value', this.options.ticks[i]);
 						if (this.options.ticks_tooltip) {
 							var tickListenerReference = this._addTickListener();
 							var enterCallback = tickListenerReference.addMouseEnter(this, tick, i);
@@ -1632,7 +1633,7 @@ const windowIsDefined = (typeof window === "object");
 				document.addEventListener("mouseup", this.mouseup, false);
 
 				this._state.inDrag = true;
-				var newValue = this._calculateValue();
+				var newValue = this._calculateValue(ev);
 
 				this._trigger('slideStart', newValue);
 
@@ -1764,7 +1765,7 @@ const windowIsDefined = (typeof window === "object");
 				this._adjustPercentageForRangeSliders(percentage);
 				this._state.percentage[this._state.dragged] = percentage;
 
-				var val = this._calculateValue(true);
+				var val = this._calculateValue(ev, true);
 				this.setValue(val, true, true);
 
 				return false;
@@ -1825,7 +1826,7 @@ const windowIsDefined = (typeof window === "object");
 				if (this._state.over === false) {
 					this._hideTooltip();
 				}
-				var val = this._calculateValue(true);
+				var val = this._calculateValue(ev, true);
 
 				this.setValue(val, false, true);
 				this._trigger('slideStop', val);
@@ -1842,7 +1843,7 @@ const windowIsDefined = (typeof window === "object");
 					val.data[index] = this._applyPrecision(val.data[index]);
 				}
 			},
-			_calculateValue: function(snapToClosestTick) {
+			_calculateValue: function(ev, snapToClosestTick) {
 				let val = {};
 				if (this.options.range) {
 					val.data = [this.options.min, this.options.max];
@@ -1852,6 +1853,8 @@ const windowIsDefined = (typeof window === "object");
 						val.data[0] = this._snapToClosestTick(val.data[0]);
 						val.data[1] = this._snapToClosestTick(val.data[1]);
 					}
+				} else if (ev && ev.target && ev.target.getAttribute('data-value') !== null) {
+					val.data = parseFloat(ev.target.getAttribute('data-value'));
 				} else {
 					val.data = this._toValue(this._state.percentage[0]);
 					val.data = parseFloat(val.data);
